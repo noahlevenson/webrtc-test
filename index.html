@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+</head>
+
+<body>
+Hello bitch
+
+<script>
+const rtcConfig = {
+	iceServers: [
+		{
+			urls: "stun:stun.l.google.com:19302"
+		}
+	]
+};
+
+
+const localConnection = new RTCPeerConnection();
+
+const remoteConnection = new RTCPeerConnection();
+
+const dataChannel = localConnection.createDataChannel("myDataChannel");
+
+localConnection.onicecandidate = (e) => {
+	// console.log(e);
+};
+
+remoteConnection.ondatachannel = (e) => {
+	console.log("data channel bitch");
+};
+
+localConnection.createOffer().then((offer) => {
+	localConnection.setLocalDescription(offer);
+
+	remoteConnection.setRemoteDescription(offer).then(() => {
+		return remoteConnection.createAnswer();
+	}).then((answer) => {
+		localConnection.setRemoteDescription(answer);
+		remoteConnection.setLocalDescription(answer);
+	});	
+}).catch((err) => {
+		console.log("Bad shit happened");	
+	}
+);
+
+
+
+</script>
+
+</body>
+</html>
