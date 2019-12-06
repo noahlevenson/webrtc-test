@@ -25,6 +25,7 @@ Hello bitch, paste your shit below:
 function initDataChannel(ch) {
 	ch.onopen = (e) => {
 		console.log(`Data channel is open`);
+		sendMessageButton.disabled = false;
 	};
 
 	ch.onmessage = (e) => {
@@ -108,7 +109,6 @@ localConnection.ondatachannel = (e) => {
 	initDataChannel(dataChannel);
 
 	console.log("data channel achieved, bitch");
-	sendMessageButton.disabled = false;
 };
 </script>
 
