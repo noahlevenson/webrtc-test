@@ -73,8 +73,10 @@ acceptAnswerButton.onclick = (e) => {
 };
 
 newIceCandidateButton.onclick = (e) => {
-	localConnection.addIceCandidate(JSON.parse(offerTextArea.value)).catch((err) => {
-		// Handle this error
+	const c = new RTCIceCandidate(JSON.parse(offerTextArea.value));
+
+	localConnection.addIceCandidate(c).catch((err) => {
+		console.log(`Error adding ICE candidate: ${err}`);
 	});
 
 	offerTextArea.value = null;
