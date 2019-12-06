@@ -14,6 +14,7 @@ Hello bitch, paste your shit below:
 
 <br>
 
+<button type="button" id="make-offer-button">make offer</button>
 <button type="button" id="accept-offer-button">accept offer</button>
 <button type="button" id="accept-answer-button">accept answer</button>
 <button type="button" id="new-ice-candidate-button">add ice candidate</button>
@@ -21,6 +22,7 @@ Hello bitch, paste your shit below:
 
 <script>
 const offerTextArea = document.getElementById("peer-offer");
+const makeOfferButton = document.getElementById("make-offer-button");
 const acceptOfferButton = document.getElementById("accept-offer-button");
 const acceptAnswerButton = document.getElementById("accept-answer-button");
 const newIceCandidateButton = document.getElementById("new-ice-candidate-button");
@@ -34,20 +36,23 @@ const rtcConfig = {
 };
 
 const localConnection = new RTCPeerConnection(rtcConfig);
-const dataChannel = localConnection.createDataChannel("myDataChannel");
-
-localConnection.createOffer().then((offer) => {
-	localConnection.setLocalDescription(offer);
-
-	console.log(`My offer is:`);
-	console.log(JSON.stringify(offer));
-});
 
 // icecandidate fires when the connection sets its local description
 // the event object contains the ICE candidate which must be signalled to the remote peer
 localConnection.onicecandidate = (e) => {
 	console.log(`Announcing my local ice candidate (null denotes end of candidates):`);
 	console.log(JSON.stringify(e.candidate));
+};
+
+makeOfferButton.onclick = (e) => {
+	const dataChannel = localConnection.createDataChannel("myDataChannel");
+
+	localConnection.createOffer().then((offer) => {
+		localConnection.setLocalDescription(offer);
+
+		console.log(`My offer is:`);
+		console.log(JSON.stringify(offer));
+	});
 };
 
 acceptOfferButton.onclick = (e) => {
