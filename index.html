@@ -59,6 +59,8 @@ acceptOfferButton.onclick = (e) => {
 	localConnection.setRemoteDescription(JSON.parse(offerTextArea.value)).then(() => {
 		return localConnection.createAnswer();
 	}).then((answer) => {
+		localConnection.setLocalDescription(answer);
+		
 		console.log(`My answer is:`);
 		console.log(JSON.stringify(answer));
 
