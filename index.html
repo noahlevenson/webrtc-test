@@ -33,7 +33,7 @@ const rtcConfig = {
 	]
 };
 
-const localConnection = new RTCPeerConnection();
+const localConnection = new RTCPeerConnection(rtcConfig);
 const dataChannel = localConnection.createDataChannel("myDataChannel");
 
 localConnection.createOffer().then((offer) => {
@@ -54,7 +54,6 @@ acceptOfferButton.onclick = (e) => {
 	localConnection.setRemoteDescription(JSON.parse(offerTextArea.value)).then(() => {
 		return localConnection.createAnswer();
 	}).then((answer) => {
-		localConnection.setLocalDescription(answer);
 		console.log(`My answer is:`);
 		console.log(JSON.stringify(answer));
 
