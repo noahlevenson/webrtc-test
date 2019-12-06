@@ -24,8 +24,19 @@ const remoteConnection = new RTCPeerConnection();
 
 const dataChannel = localConnection.createDataChannel("myDataChannel");
 
+// onicecandidate is fired when the connection sets its local description - so what we're doing here is just adding the ice candidate to the remote connection (and vice versa), and I think when both ice candidates have been added reciprocally, the connection is automatically negotiated by the ice agent.
+// ACTUALLY, INCORRECT - TO NEGOTIATE the connection, only one of the peers needs to call addIceCandidate, and it doesn't matter which one it is.
 localConnection.onicecandidate = (e) => {
-	// console.log(e);
+	console.log(e.candidate);
+	remoteConnection.addIceCandidate(e.candidate).catch((err) => {});
+};
+
+remoteConnection.onicecandidate = (e) => {
+ 	localConnection.addIceCandidate(e.candidate).catch((err) => {});
+};
+
+dataChannel.onopen = (e) => {
+	console.log("Somebody opened me!");
 };
 
 remoteConnection.ondatachannel = (e) => {
@@ -40,6 +51,8 @@ localConnection.createOffer().then((offer) => {
 	}).then((answer) => {
 		localConnection.setRemoteDescription(answer);
 		remoteConnection.setLocalDescription(answer);
+		
+		console.log(remoteConnection);
 	});	
 }).catch((err) => {
 		console.log("Bad shit happened");	
