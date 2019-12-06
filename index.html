@@ -6,9 +6,25 @@
 </head>
 
 <body>
-Hello bitch
+Hello bitch, paste your shit below:
+
+<br>
+
+<textarea id="peer-offer" style="width: 500px; height: 300px;"></textarea>
+
+<br>
+
+<button type="button" id="accept-offer-button">accept offer</button>
+<button type="button" id="accept-answer-button">accept answer</button>
+<button type="button" id="new-ice-candidate-button">add ice candidate</button>
+
 
 <script>
+const offerTextArea = document.getElementById("peer-offer");
+const acceptOfferButton = document.getElementById("accept-offer-button");
+const acceptAnswerButton = document.getElementById("accept-answer-button");
+const newIceCandidateButton = document.getElementById("new-ice-candidate-button");
+
 const rtcConfig = {
 	iceServers: [
 		{
@@ -17,49 +33,52 @@ const rtcConfig = {
 	]
 };
 
-
 const localConnection = new RTCPeerConnection();
-
-const remoteConnection = new RTCPeerConnection();
-
 const dataChannel = localConnection.createDataChannel("myDataChannel");
-
-// onicecandidate is fired when the connection sets its local description - so what we're doing here is just adding the ice candidate to the remote connection (and vice versa), and I think when both ice candidates have been added reciprocally, the connection is automatically negotiated by the ice agent.
-// ACTUALLY, INCORRECT - TO NEGOTIATE the connection, only one of the peers needs to call addIceCandidate, and it doesn't matter which one it is.
-localConnection.onicecandidate = (e) => {
-	console.log(e.candidate);
-	remoteConnection.addIceCandidate(e.candidate).catch((err) => {});
-};
-
-remoteConnection.onicecandidate = (e) => {
- 	localConnection.addIceCandidate(e.candidate).catch((err) => {});
-};
-
-dataChannel.onopen = (e) => {
-	console.log("Somebody opened me!");
-};
-
-remoteConnection.ondatachannel = (e) => {
-	console.log("data channel bitch");
-};
 
 localConnection.createOffer().then((offer) => {
 	localConnection.setLocalDescription(offer);
 
-	remoteConnection.setRemoteDescription(offer).then(() => {
-		return remoteConnection.createAnswer();
+	console.log(`My offer is:`);
+	console.log(JSON.stringify(offer));
+});
+
+// icecandidate fires when the connection sets its local description
+// the event object contains the ICE candidate which must be signalled to the remote peer
+localConnection.onicecandidate = (e) => {
+	console.log(`Announcing my local ice candidate (null denotes end of candidates):`);
+	console.log(JSON.stringify(e.candidate));
+};
+
+acceptOfferButton.onclick = (e) => {
+	localConnection.setRemoteDescription(JSON.parse(offerTextArea.value)).then(() => {
+		return localConnection.createAnswer();
 	}).then((answer) => {
-		localConnection.setRemoteDescription(answer);
-		remoteConnection.setLocalDescription(answer);
-		
-		console.log(remoteConnection);
-	});	
-}).catch((err) => {
-		console.log("Bad shit happened");	
-	}
-);
+		localConnection.setLocalDescription(answer);
+		console.log(`My answer is:`);
+		console.log(JSON.stringify(answer));
 
+		offerTextArea.value = null;
+	});
+};
 
+acceptAnswerButton.onclick = (e) => {
+	localConnection.setRemoteDescription(JSON.parse(offerTextArea.value)).then(() => {
+		offerTextArea.value = null;
+	});
+};
+
+newIceCandidateButton.onclick = (e) => {
+	localConnection.addIceCandidate(JSON.parse(offerTextArea.value)).catch((err) => {
+		// Handle this error
+	});
+
+	offerTextArea.value = null;
+};
+
+localConnection.ondatachannel = (e) => {
+	console.log("data channel achieved, bitch");
+};
 
 </script>
 

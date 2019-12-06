@@ -1,3 +1,12 @@
+AREAS FOR THINKING/INNOVATION:
+
+1.  The STUN/TURN server requirement is centralizing and kind of defeats the purpose here.  Is there a way to create a distributed STUN/TURN server?  What about alternative methods to getting around NAT (like hole punching?) Can we get around NAT in a different way and construct a valid session description?
+
+2.  The signalling server is also centralizing. In the case where peers gather around a website, you might imagine that the website would provide the signalling server (and also probably the STUN/TURN server). But for other cases, what are less centralized means of doing this and bootstrapping the first peer connection?  Is this a case where distributed hash tables might be useful?
+
+
+
+
 https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Connectivity
 
 each peer needs to have a piece of data that describes who it is and how you connect to it - this is called a SESSION DESCRIPTION, and session descriptions are described using SESSION DESCRIPTION PROTOCOL (SDP). 
