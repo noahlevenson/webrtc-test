@@ -18,14 +18,22 @@ Hello bitch, paste your shit below:
 <button type="button" id="accept-offer-button">accept offer</button>
 <button type="button" id="accept-answer-button">accept answer</button>
 <button type="button" id="new-ice-candidate-button">add ice candidate</button>
+<button type="button" id="send-message-button" disabled="true">send msg</button>
 
 
 <script>
+function initDataChannel(ch) {
+	ch.onopen = (e) => {
+		console.log(`Data channel is open`);
+	}
+}
+
 const offerTextArea = document.getElementById("peer-offer");
 const makeOfferButton = document.getElementById("make-offer-button");
 const acceptOfferButton = document.getElementById("accept-offer-button");
 const acceptAnswerButton = document.getElementById("accept-answer-button");
 const newIceCandidateButton = document.getElementById("new-ice-candidate-button");
+const sendMessageButton = document.getElementById("send-message-button");
 
 const rtcConfig = {
 	iceServers: [
@@ -36,6 +44,7 @@ const rtcConfig = {
 };
 
 const localConnection = new RTCPeerConnection(rtcConfig);
+let dataChannel = null;
 
 // icecandidate fires when the connection sets its local description
 // the event object contains the ICE candidate which must be signalled to the remote peer
@@ -45,7 +54,8 @@ localConnection.onicecandidate = (e) => {
 };
 
 makeOfferButton.onclick = (e) => {
-	const dataChannel = localConnection.createDataChannel("myDataChannel");
+	dataChannel = localConnection.createDataChannel("myDataChannel");
+	initDataChannel(dataChannel);
 
 	localConnection.createOffer().then((offer) => {
 		localConnection.setLocalDescription(offer);
@@ -60,7 +70,7 @@ acceptOfferButton.onclick = (e) => {
 		return localConnection.createAnswer();
 	}).then((answer) => {
 		localConnection.setLocalDescription(answer);
-		
+
 		console.log(`My answer is:`);
 		console.log(JSON.stringify(answer));
 
@@ -86,7 +96,11 @@ newIceCandidateButton.onclick = (e) => {
 
 localConnection.ondatachannel = (e) => {
 	console.log("data channel achieved, bitch");
+	dataChannel = e.channel
+	initDataChannel(dataChannel);
 };
+
+
 
 </script>
 
