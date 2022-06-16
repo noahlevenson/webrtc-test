@@ -1,3 +1,34 @@
+HOW TO USE THIS THING:
+
+Set up two computers.  Let's call one of them Alice and the other one Bob.  We're going to 
+establish a WebRTC connection between them, using email as the signaling mechanism.
+
+STEPS:
+
+1.  On both Alice and Bob, host index.html on a local webserver, and navigate to it in the browser.
+Open up the console. All the important information will be logged there.
+
+2.  On Alice, click "make offer". This generates SDP metadata for the offering peer, and a few ms
+later, you'll see ICE candidates start to roll in, as the WebRTC API uses your browser's integrated
+STUN client to perform NAT traversal and apply ICE heuristics to rank your connectivity options.
+
+3.  Copy the offer -- it's the object that begins with "type: offer" -- and the topmost candidate
+object, and paste them into an email.  We're signalling that information to Bob!
+
+4.  On Bob, grab the aforementioned email.  Cut and paste the offer object into the input box, and
+click "accept offer". This will generate an answer, and you'll see ICE candidates roll in as before.
+Now cut and paste the candidate object from the email into the input box, and click "add ice candidate".
+
+5.  We're not done with Bob yet: Copy the answer -- it's the object that begins with "type: answer"
+-- and paste it into an email.  We're signalling that information to Alice!
+
+6.  On Alice, grab the aforementioned email. Cut and paste the answer object into the input box and
+click "accept answer". You should see a message indicating that the data channel is open, and the
+"send msg" button should become enabled. You can now type into the input box on both Alice and Bob
+and send messages back and forth without an intermediary.  Note that for some reason, we didn't
+have paste Bob's ice candidate to Alice -- I'm not sure why that is.
+
+
 AREAS FOR THINKING/INNOVATION:
 
 1.  The STUN/TURN server requirement is centralizing and kind of defeats the purpose here.  Is there a way to create a distributed STUN/TURN server?  What about alternative methods to getting around NAT (like hole punching?) Can we get around NAT in a different way and construct a valid session description?
