@@ -60,8 +60,8 @@ localConnection.onicecandidate = (e) => {
   // Last ICE candidate detected -- we should now have all our ICE candidates added to our SDP,
   // so let's log it to the console
   if (e.candidate === null) {
-    console.log("My offer is:");
-    console.log(localConnection.localDescription.sdp)
+    console.log("My SDP is:");
+    console.log(JSON.stringify(localConnection.localDescription.sdp))
   }
 };
 
@@ -83,8 +83,8 @@ acceptOfferButton.onclick = (e) => {
 	}).then((answer) => {
 		localConnection.setLocalDescription(answer);
 
-		console.log(`My answer is:`);
-		console.log(JSON.stringify(answer));
+		//console.log(`My answer is:`);
+		//console.log(JSON.stringify(answer));
 
 		offerTextArea.value = null;
 	});
