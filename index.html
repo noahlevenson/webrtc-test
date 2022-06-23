@@ -56,6 +56,13 @@ let dataChannel = null;
 localConnection.onicecandidate = (e) => {
 	console.log(`Announcing my local ice candidate (null denotes end of candidates):`);
 	console.log(JSON.stringify(e.candidate));
+  
+  // Last ICE candidate detected -- we should now have all our ICE candidates added to our SDP,
+  // so let's log it to the console
+  if (e.candidate === null) {
+    console.log("My offer is:");
+    console.log(localConnection.localDescription.sdp)
+  }
 };
 
 makeOfferButton.onclick = (e) => {
@@ -65,8 +72,8 @@ makeOfferButton.onclick = (e) => {
 	localConnection.createOffer().then((offer) => {
 		localConnection.setLocalDescription(offer);
 
-		console.log(`My offer is:`);
-		console.log(JSON.stringify(offer));
+		// console.log(`My offer is:`);
+		// console.log(JSON.stringify(offer));
 	});
 };
 
