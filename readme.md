@@ -8,16 +8,20 @@ STEPS:
 1.  On both Alice and Bob, host index.html on a local webserver, and navigate to it in the browser.
 Open up the console. All the important information will be logged there.
 
-2.  On Alice, click "make offer". This generates SDP metadata for the offering peer, and a few ms
-later, you'll see ICE candidates start to roll in, as the WebRTC API uses your browser's integrated
-STUN client to perform NAT traversal and apply ICE heuristics to rank your connectivity options.
+2.  On Alice, click "make offer". You'll see ICE candidates start to trickle in, as the WebRTC API 
+uses your browser's integrated STUN client to perform NAT traversal and apply ICE heuristics to 
+rank your connectivity options. After the "null" ICE candidate (indicating that no more ICE 
+candidates are available), your SDP offer info will be logged to the console. You'll see that the ICE
+candidates have been added to it. This is because we want to perform signaling in "non trickle" 
+mode -- that is, we want to do a simple two-way handshake: one offer, and one answer. (In 
+trickle mode, you can exchange offers and answers without including ICE candidates in them, and
+keep the communications channel open to exchange ICE candidates as extra steps in the negotiation.)
 
-3.  Copy the offer -- it's the object that begins with "type: offer" -- and the topmost candidate
-object, and paste them into an email.  We're signalling that information to Bob!
+3.  Copy the offer and paste it into an email.  We're signalling that information to Bob!
 
-4.  On Bob, grab the aforementioned email.  Cut and paste the offer object into the input box, and
-click "accept offer". This will generate an answer, and you'll see ICE candidates roll in as before.
-Now cut and paste the candidate object from the email into the input box, and click "add ice candidate".
+4.  On Bob, grab the aforementioned email. Cut and paste the offer object into the input box, and
+click "accept offer". This will generate an answer -- you'll see ICE candidates roll in as before,
+and then Bob's SDP answer, including those ICE candidates, will be logged to the console.
 
 5.  We're not done with Bob yet: Copy the answer -- it's the object that begins with "type: answer"
 -- and paste it into an email.  We're signalling that information to Alice!
@@ -25,8 +29,7 @@ Now cut and paste the candidate object from the email into the input box, and cl
 6.  On Alice, grab the aforementioned email. Cut and paste the answer object into the input box and
 click "accept answer". You should see a message indicating that the data channel is open, and the
 "send msg" button should become enabled. You can now type into the input box on both Alice and Bob
-and send messages back and forth without an intermediary.  Note that for some reason, we didn't
-have paste Bob's ice candidate to Alice -- I'm not sure why that is.
+and send messages back and forth without an intermediary.
 
 
 AREAS FOR THINKING/INNOVATION:
