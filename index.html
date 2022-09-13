@@ -6,7 +6,7 @@
 </head>
 
 <body>
-Hello bitch, paste your shit below:
+Hello friend, paste your shit below:
 
 <br>
 
@@ -54,14 +54,14 @@ let dataChannel = null;
 // icecandidate fires when the connection sets its local description
 // the event object contains the ICE candidate which must be signalled to the remote peer
 localConnection.onicecandidate = (e) => {
-	console.log(`Announcing my local ice candidate (null denotes end of candidates):`);
+	console.log(`Announcing my ice candidate (null denotes end of candidates):`);
 	console.log(JSON.stringify(e.candidate));
   
   // Last ICE candidate detected -- we should now have all our ICE candidates added to our SDP,
   // so let's log it to the console
   if (e.candidate === null) {
-    console.log("My RTCSessionDescription is:");
-    console.log(JSON.stringify(localConnection.localDescription))
+    console.log(`\n\n\nI've now added the ICE candidates to my offer SDP:`);
+    console.log(JSON.stringify(localConnection.localDescription));
   }
 };
 
@@ -70,7 +70,11 @@ makeOfferButton.onclick = (e) => {
 	initDataChannel(dataChannel);
 
 	localConnection.createOffer().then((offer) => {
-		localConnection.setLocalDescription(offer);
+		console.log(`My offer SDP (before ICE candidates have been gathered):`)
+    console.log(`${JSON.stringify(offer)}\n\n\n`);
+    
+    console.log(`Now I'll gather ICE candidates in a separate step, watch me hit a STUN server!`);
+    localConnection.setLocalDescription(offer);
 
 		// console.log(`My offer is:`);
 		// console.log(JSON.stringify(offer));
@@ -81,7 +85,11 @@ acceptOfferButton.onclick = (e) => {
 	localConnection.setRemoteDescription(JSON.parse(offerTextArea.value)).then(() => {
 		return localConnection.createAnswer();
 	}).then((answer) => {
-		localConnection.setLocalDescription(answer);
+	  console.log(`My answer SDP (before ICE candidates have been gathered):`)
+    console.log(`${JSON.stringify(offer)}\n\n\n`);
+    
+    console.log(`Now I'll gather ICE candidates in a separate step, watch me hit a STUN server!`);
+    localConnection.setLocalDescription(answer);
 
 		//console.log(`My answer is:`);
 		//console.log(JSON.stringify(answer));
